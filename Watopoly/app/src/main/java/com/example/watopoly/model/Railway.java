@@ -1,9 +1,15 @@
 package com.example.watopoly.model;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.example.watopoly.enums.BuildingDirection;
+
 public class Railway extends Property {
+
     @Override
-    double rentPrice() {
-        return this.basePrice;
+    double getRentPrice() {
+        return 0;
     }
 
     //TODO:
@@ -13,7 +19,17 @@ public class Railway extends Property {
     }
 
     @Override
-    void landOn(Player player) {
+    void landOn(Canvas canvas, Player player, Paint paint) {
 
     }
+
+    @Override
+    public void drawOn(Canvas canvas) {
+
+    }
+
+    public Railway(String name, BuildingDirection direction, double baseRentPrice, double purchasePrice) {
+        super(name, direction, baseRentPrice, purchasePrice);
+    }
+
 }

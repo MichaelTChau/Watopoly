@@ -1,7 +1,9 @@
 package com.example.watopoly.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -10,11 +12,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.watopoly.R;
+import com.example.watopoly.enums.BuildingDirection;
 import com.example.watopoly.fragment.PlayerInfoHeaderFragment;
+import com.example.watopoly.model.Building;
+import com.example.watopoly.model.CardTile;
+import com.example.watopoly.model.Coordinates;
 import com.example.watopoly.model.Game;
+import com.example.watopoly.model.GoTile;
+import com.example.watopoly.model.GoToJail;
+import com.example.watopoly.model.Jail;
+import com.example.watopoly.model.Parking;
 import com.example.watopoly.model.Player;
+import com.example.watopoly.model.Railway;
+import com.example.watopoly.model.TaxTile;
+import com.example.watopoly.model.Tile;
+import com.example.watopoly.model.Utility;
+import com.example.watopoly.view.BoardView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainGameViewActivity extends AppCompatActivity {
     //TODO: move this somewhere else?
@@ -22,6 +38,7 @@ public class MainGameViewActivity extends AppCompatActivity {
     private static final double startingMoney = 500;
 
     private PlayerInfoHeaderFragment playerInfoHeaderFragment;
+    private Tile[] tiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +48,24 @@ public class MainGameViewActivity extends AppCompatActivity {
         setup();
         playerInfoHeaderFragment.setPlayer(gameState.nextTurn());
 
+        boardSetup();
+
+
         //TODO: rolling
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void boardSetup() {
+        BoardView boardView = findViewById(R.id.board);
+        boardView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                // can click on tiles to see tile information in the future
+                // System.out.println(motionEvent.getX());
+                // System.out.println(motionEvent.getY());
+                return false;
+            }
+        });
     }
 
     private void linkView() {
@@ -40,6 +74,9 @@ public class MainGameViewActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         playerInfoHeaderFragment = (PlayerInfoHeaderFragment) fm.findFragmentById(R.id.playerInfoHeaderFragment);
+
+        BoardView boardView = findViewById(R.id.board);
+        tiles = boardView.getTiles();
 
         //TODO: bind button to the activity
         Button buyButton = findViewById(R.id.buyPropertyButton);

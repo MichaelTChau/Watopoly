@@ -11,6 +11,8 @@ public class Player {
     private ArrayList<Property> properties = new ArrayList<>();
     private int jailFreeCards = 0;
     private int coordinates = 0;
+    private int currPosition = 0;
+    private int numIonTrains = 0;
 
     public Player(String name, Double money, String colour, int icon) {
         this.name = name;
