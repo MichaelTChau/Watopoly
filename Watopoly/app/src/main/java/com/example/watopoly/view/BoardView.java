@@ -2,19 +2,12 @@ package com.example.watopoly.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.core.content.res.ResourcesCompat;
-
-import com.example.watopoly.R;
 import com.example.watopoly.enums.BuildingDirection;
 import com.example.watopoly.model.Building;
 import com.example.watopoly.model.CardTile;
@@ -23,18 +16,24 @@ import com.example.watopoly.model.GoTile;
 import com.example.watopoly.model.GoToJail;
 import com.example.watopoly.model.Jail;
 import com.example.watopoly.model.Parking;
-import com.example.watopoly.model.Property;
 import com.example.watopoly.model.Railway;
 import com.example.watopoly.model.TaxTile;
 import com.example.watopoly.model.Tile;
 import com.example.watopoly.model.Utility;
-import com.example.watopoly.util.Tiles;
-
-import java.util.HashMap;
 
 public class BoardView extends View {
 
-    private Tile[] tiles = new Tile[38];
+    private static final float spaceAboveAndBelowBoard = 60;
+    private static final float spaceLeftOfBoard = 100;
+
+    // changing numTilesInColumn and numTilesInRow requires changing the tiles array
+    private static final int numTilesInColumn = 8;
+    private static final float columnTileWidth = 150;
+    private static final int numTilesInRow = 9;
+    private static final float rowTileHeight = columnTileWidth;
+
+    private static final int totalNumTiles = (numTilesInColumn * 2) + (numTilesInRow * 2) + 4;
+    private Tile[] tiles = new Tile[totalNumTiles];
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -44,95 +43,140 @@ public class BoardView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        Paint mPaint = new Paint();
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth(4);
-
-        Paint inside = new Paint();
-        inside.setColor(Color.YELLOW);
-
-        float screenHeight = getHeight() + 60;
-        float screenWidth  = getWidth();
-
-        // 15 and 20 are hardcoded constants
-        float topRowTileBottomCoordinate = (float) (screenHeight/15);
-        float leftColumnTileLeftCoordinate = (float) (screenWidth/20);
-
-        float columnTileWidth = (float)(leftColumnTileLeftCoordinate * 1.5);
-        float diff = (float)(topRowTileBottomCoordinate*3) - columnTileWidth;
-
         initTiles();
-        drawBuildingColumns(canvas, topRowTileBottomCoordinate, topRowTileBottomCoordinate, leftColumnTileLeftCoordinate, topRowTileBottomCoordinate, mPaint);
-        drawBuildingRows(canvas, leftColumnTileLeftCoordinate, topRowTileBottomCoordinate, mPaint);
-        drawCornerTiles(canvas, leftColumnTileLeftCoordinate, topRowTileBottomCoordinate, diff, columnTileWidth, mPaint);
 
-        Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.android, null);
-        Bitmap b = ((BitmapDrawable) d).getBitmap();
-        canvas.drawBitmap(b, 50, 50, mPaint);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(4);
+
+        float boardHeight = getHeight() - (spaceAboveAndBelowBoard * 2);
+
+        //subtract corner tiles (height of corner tile is width of column tile)
+        float cornerTileHeight = columnTileWidth;
+        float columnHeight = boardHeight - (cornerTileHeight * 2);
+
+        float tileInColumnHeight = columnHeight/numTilesInColumn;
+        float rowTileWidth = tileInColumnHeight;
+
+        float rowWidth = rowTileWidth * numTilesInRow;
+
+        drawColumns(canvas, tileInColumnHeight, cornerTileHeight, rowWidth, paint);
+        drawRows(canvas, rowTileWidth, cornerTileHeight, paint);
+        drawCornerTiles(canvas, cornerTileHeight, rowWidth, paint);
     }
 
-    public void drawBuildingColumns(Canvas canvas, float bottomCoordinate, float topCoordinate, float leftColumnTileLeftCoordinate, float topRowTileBottomCoordinate, Paint mPaint) {
+    public void drawColumns(Canvas canvas, float tileInColumnHeight, float cornerTileHeight, float rowWidth, Paint paint) {
+        float bottomOffset = getHeight() - spaceAboveAndBelowBoard - cornerTileHeight;
+        float leftOffsetForRightColumn = spaceLeftOfBoard + columnTileWidth + rowWidth;
 
-        float buildingRowLength = (float)(9 * topRowTileBottomCoordinate);
-        float leftCoordinate = (float) (leftColumnTileLeftCoordinate * 2.5) + buildingRowLength;
-        float second = (float) (leftColumnTileLeftCoordinate * 1.5);
-
-        for (int i = 3; i < 11; i++) {
+        for (int i = 0; i < numTilesInColumn; i++) {
             // draw left column
-            canvas.drawRect(leftColumnTileLeftCoordinate, topCoordinate * i, (float) (leftColumnTileLeftCoordinate * 2.5), bottomCoordinate * (i+1), mPaint);
-            Coordinates leftCoordinates = new Coordinates (leftColumnTileLeftCoordinate, topCoordinate * i, (float) (leftColumnTileLeftCoordinate * 2.5), bottomCoordinate * (i+1));
-            tiles[i-2].setCoordinates(leftCoordinates);
-            tiles[i-2].drawOn(canvas);
+            Coordinates leftColumnCoordinates = new Coordinates(
+                    spaceLeftOfBoard,
+                    bottomOffset - (tileInColumnHeight * (i + 1)),
+                    spaceLeftOfBoard + columnTileWidth,
+                    bottomOffset - (tileInColumnHeight * (i)));
+            drawRectWithCoordinates(canvas, leftColumnCoordinates, paint);
+            tiles[i+1].setCoordinates(leftColumnCoordinates);
+            tiles[i+1].drawOn(canvas);
 
             // draw right column
-            canvas.drawRect(leftCoordinate, topCoordinate * i, leftCoordinate + second, bottomCoordinate * (i+1), mPaint);
-            Coordinates rightCoordinates = new Coordinates (leftCoordinate, topCoordinate * i, leftCoordinate + second, bottomCoordinate * (i+1));
-            tiles[30-i].setCoordinates(rightCoordinates);
-            tiles[30-i].drawOn(canvas);
+            Coordinates rightColumnCoordinates = new Coordinates(
+                    leftOffsetForRightColumn,
+                    bottomOffset - (tileInColumnHeight * (i + 1)),
+                    leftOffsetForRightColumn + columnTileWidth,
+                    bottomOffset - (tileInColumnHeight * i));
+            drawRectWithCoordinates(canvas, rightColumnCoordinates, paint);
+            int rightColumnBottomTileIndex = totalNumTiles - numTilesInRow - 2;
+            tiles[rightColumnBottomTileIndex-i].setCoordinates(rightColumnCoordinates);
+            tiles[rightColumnBottomTileIndex-i].drawOn(canvas);
         }
     }
 
-    public void drawBuildingRows(Canvas canvas, float leftColumnTileLeftCoordinate, float topRowTileBottomCoordinate, Paint mPaint) {
+    public void drawRows(Canvas canvas, float rowTileWidth, float cornerTileHeight, Paint paint) {
+        float leftOffset = spaceLeftOfBoard + cornerTileHeight;
+        float bottomOffsetForBottomRow = getHeight() - spaceAboveAndBelowBoard;
 
-        float endOfLeftColumn = (float)(leftColumnTileLeftCoordinate * 2.5);
-        float second = (float) (leftColumnTileLeftCoordinate * 1.5);
-        float diff = (float)(topRowTileBottomCoordinate*3) - ((float)(leftColumnTileLeftCoordinate*2.5) - leftColumnTileLeftCoordinate);
-
-        int factor = 16;
-        for (int i = 0; i < 9; i++) {
-            // draw top row
-            canvas.drawRect(endOfLeftColumn + (i * topRowTileBottomCoordinate),(float)(topRowTileBottomCoordinate*3) , endOfLeftColumn + ((i+1)*(topRowTileBottomCoordinate)),diff ,mPaint);
-            Coordinates topRowCoordinates = new Coordinates(endOfLeftColumn + (i * topRowTileBottomCoordinate),(float)(topRowTileBottomCoordinate*3) , endOfLeftColumn + ((i+1)*(topRowTileBottomCoordinate)),diff);
-            tiles[i+10].setCoordinates(topRowCoordinates);
-            tiles[i+10].drawOn(canvas);
-
+        for (int i = 0; i < numTilesInRow; i++) {
             // draw bottom row
-            canvas.drawRect(endOfLeftColumn + (i * topRowTileBottomCoordinate),(float)(topRowTileBottomCoordinate*11)+second , endOfLeftColumn + ((i+1)*(topRowTileBottomCoordinate)), (float)(topRowTileBottomCoordinate*11) ,mPaint);
-            Coordinates bottomRowCoordinates = new Coordinates(endOfLeftColumn + (i * topRowTileBottomCoordinate),(float)(topRowTileBottomCoordinate*11)+second , endOfLeftColumn + ((i+1)*(topRowTileBottomCoordinate)), (float)(topRowTileBottomCoordinate*11));
-            tiles[37-i].setCoordinates(bottomRowCoordinates);
-            tiles[37-i].drawOn(canvas);
+            Coordinates bottomRowCoordinates = new Coordinates(
+                    leftOffset + (rowTileWidth * i),
+                    bottomOffsetForBottomRow,
+                    leftOffset + (rowTileWidth * (i + 1)),
+                    bottomOffsetForBottomRow - rowTileHeight);
+            drawRectWithCoordinates(canvas, bottomRowCoordinates, paint);
+            int bottomRowLeftmostTileIndex = totalNumTiles - 1;
+            tiles[bottomRowLeftmostTileIndex-i].setCoordinates(bottomRowCoordinates);
+            tiles[bottomRowLeftmostTileIndex-i].drawOn(canvas);
+
+            // draw top row
+            Coordinates topRowCoordinates = new Coordinates(
+                    leftOffset + (rowTileWidth * i),
+                    spaceAboveAndBelowBoard,
+                    leftOffset + (rowTileWidth * (i + 1)),
+                    spaceAboveAndBelowBoard + rowTileHeight);
+            drawRectWithCoordinates(canvas, topRowCoordinates, paint);
+            int topRowRightmostTileIndex = numTilesInColumn + numTilesInRow + 1;
+            tiles[topRowRightmostTileIndex-i].setCoordinates(topRowCoordinates);
+            tiles[topRowRightmostTileIndex-i].drawOn(canvas);
         }
     }
 
-    public void drawCornerTiles(Canvas canvas, float leftColumnTileLeftCoordinate, float topRowTileBottomCoordinate, float diff, float columnTileWidth, Paint mPaint) {
+    public void drawCornerTiles(Canvas canvas, float cornerTileHeight, float rowWidth, Paint paint) {
+        float bottomOffset = getHeight() - spaceAboveAndBelowBoard;
+        float leftOffset = spaceLeftOfBoard + rowWidth + columnTileWidth;
 
-        // draw jail
-        canvas.drawRect((float) leftColumnTileLeftCoordinate, (float)(topRowTileBottomCoordinate*3), (float)(leftColumnTileLeftCoordinate*2.5), diff, mPaint);
-        Coordinates jailCoordinates = new Coordinates((float) leftColumnTileLeftCoordinate, (float)(topRowTileBottomCoordinate*3), (float)(leftColumnTileLeftCoordinate*2.5), diff);
+        // draw go tile
+        Coordinates goCoordinates = new Coordinates(
+                spaceLeftOfBoard,
+                bottomOffset - cornerTileHeight,
+                spaceLeftOfBoard + cornerTileHeight,
+                bottomOffset);
+        drawRectWithCoordinates(canvas, goCoordinates, paint);
+        tiles[0].setCoordinates(goCoordinates);
+        tiles[0].drawOn(canvas);
 
-        // draw go
-        canvas.drawRect((float) leftColumnTileLeftCoordinate, (float)(topRowTileBottomCoordinate*11)+columnTileWidth, (float)(leftColumnTileLeftCoordinate*2.5), (float)(topRowTileBottomCoordinate*11), mPaint);
-        Coordinates goCoordinates = new Coordinates((float) leftColumnTileLeftCoordinate, (float)(topRowTileBottomCoordinate*11)+columnTileWidth, (float)(leftColumnTileLeftCoordinate*2.5), (float)(topRowTileBottomCoordinate*11));
+        // draw jail tile
+        Coordinates jailCoordinates = new Coordinates(
+                spaceLeftOfBoard,
+                spaceAboveAndBelowBoard,
+                spaceLeftOfBoard + cornerTileHeight,
+                spaceAboveAndBelowBoard + cornerTileHeight);
+        drawRectWithCoordinates(canvas, jailCoordinates, paint);
+        tiles[numTilesInColumn+1].setCoordinates(jailCoordinates);
+        tiles[numTilesInColumn+1].drawOn(canvas);
 
-        // draw free parking
-        canvas.drawRect((float)(leftColumnTileLeftCoordinate*2.5)+(9*topRowTileBottomCoordinate), (float)(topRowTileBottomCoordinate*11)+columnTileWidth, (float)(leftColumnTileLeftCoordinate*2.5)+((9)*(topRowTileBottomCoordinate))+columnTileWidth, (float)(topRowTileBottomCoordinate*11), mPaint);
-        Coordinates parkingCoordinates = new Coordinates((float)(leftColumnTileLeftCoordinate*2.5)+(9*topRowTileBottomCoordinate), (float)(topRowTileBottomCoordinate*11)+columnTileWidth, (float)(leftColumnTileLeftCoordinate*2.5)+((9)*(topRowTileBottomCoordinate))+columnTileWidth, (float)(topRowTileBottomCoordinate*11));
+        // draw parking tile
+        Coordinates parkingCoordinates = new Coordinates(
+                leftOffset,
+                spaceAboveAndBelowBoard,
+                leftOffset + cornerTileHeight,
+                spaceAboveAndBelowBoard + cornerTileHeight);
+        drawRectWithCoordinates(canvas, parkingCoordinates, paint);
+        int parkingIndex = numTilesInColumn + numTilesInRow + 2;
+        tiles[parkingIndex].setCoordinates(parkingCoordinates);
+        tiles[parkingIndex].drawOn(canvas);
 
-        // draw go to jail
-        canvas.drawRect((float)(leftColumnTileLeftCoordinate*2.5)+(9*topRowTileBottomCoordinate), (float)(topRowTileBottomCoordinate*3), (float)(leftColumnTileLeftCoordinate*2.5)+((9)*(topRowTileBottomCoordinate))+columnTileWidth, diff, mPaint);
-        Coordinates goToJailCoordinates = new Coordinates((float)(leftColumnTileLeftCoordinate*2.5)+(9*topRowTileBottomCoordinate), (float)(topRowTileBottomCoordinate*3), (float)(leftColumnTileLeftCoordinate*2.5)+((9)*(topRowTileBottomCoordinate))+columnTileWidth, diff);
+        // draw goToJail tile
+        Coordinates goToJailCoordinates = new Coordinates(
+                leftOffset,
+                bottomOffset - cornerTileHeight,
+                leftOffset + cornerTileHeight,
+                bottomOffset );
+        drawRectWithCoordinates(canvas, goToJailCoordinates, paint);
+        int goToJailIndex = totalNumTiles - numTilesInRow -  1;
+        tiles[goToJailIndex].setCoordinates(goToJailCoordinates);
+        tiles[goToJailIndex].drawOn(canvas);
+    }
+
+
+    public void drawRectWithCoordinates(Canvas canvas, Coordinates coordinates, Paint paint) {
+        canvas.drawRect(coordinates.getLeft(),
+                coordinates.getTop(),
+                coordinates.getRight(),
+                coordinates.getBottom(),
+                paint);
     }
 
     public void initTiles() {

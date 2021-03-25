@@ -32,14 +32,33 @@ public class Building extends Property {
         insideFill.setColor(Color.parseColor(hexCode));
         int fillOffset = 125;
 
+        // offset for thickness of gameboard lines, which is currently 4
+        int thicknessOffset = 2;
+
         if (direction == BuildingDirection.LEFT) {
-            canvas.drawRect((float) (coordinates.left + fillOffset), coordinates.top + 2, coordinates.right - 2, coordinates.bottom, insideFill);
+            canvas.drawRect(coordinates.left + fillOffset,
+                    coordinates.top,
+                    coordinates.right - thicknessOffset,
+                    coordinates.bottom - thicknessOffset,
+                    insideFill);
         } else if (direction == BuildingDirection.TOP) {
-            canvas.drawRect(coordinates.left + 2, coordinates.top - 2, coordinates.right - 2, coordinates.bottom + fillOffset, insideFill);
+            canvas.drawRect(coordinates.left + thicknessOffset,
+                    coordinates.top + fillOffset,
+                    coordinates.right - thicknessOffset,
+                    coordinates.bottom - thicknessOffset,
+                    insideFill);
         } else if (direction == BuildingDirection.RIGHT) {
-            canvas.drawRect(coordinates.left + 2, coordinates.top + 2, coordinates.right - fillOffset, coordinates.bottom, insideFill);
+            canvas.drawRect(coordinates.left + thicknessOffset,
+                    coordinates.top - thicknessOffset,
+                    coordinates.right - fillOffset,
+                    coordinates.bottom - thicknessOffset,
+                    insideFill);
         } else if (direction == BuildingDirection.BOTTOM) {
-            canvas.drawRect(coordinates.left + 2, coordinates.top - fillOffset, coordinates.right - 2, coordinates.bottom + 2, insideFill);
+            canvas.drawRect(coordinates.left + thicknessOffset,
+                    coordinates.top - fillOffset,
+                    coordinates.right - thicknessOffset,
+                    coordinates.bottom + thicknessOffset,
+                    insideFill);
         }
     }
 

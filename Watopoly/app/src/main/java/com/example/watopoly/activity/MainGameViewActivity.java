@@ -12,25 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.watopoly.R;
-import com.example.watopoly.enums.BuildingDirection;
 import com.example.watopoly.fragment.PlayerInfoHeaderFragment;
-import com.example.watopoly.model.Building;
-import com.example.watopoly.model.CardTile;
-import com.example.watopoly.model.Coordinates;
 import com.example.watopoly.model.Game;
-import com.example.watopoly.model.GoTile;
-import com.example.watopoly.model.GoToJail;
-import com.example.watopoly.model.Jail;
-import com.example.watopoly.model.Parking;
 import com.example.watopoly.model.Player;
-import com.example.watopoly.model.Railway;
-import com.example.watopoly.model.TaxTile;
 import com.example.watopoly.model.Tile;
-import com.example.watopoly.model.Utility;
 import com.example.watopoly.view.BoardView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainGameViewActivity extends AppCompatActivity {
     //TODO: move this somewhere else?
