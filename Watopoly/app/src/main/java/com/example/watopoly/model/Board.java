@@ -2,9 +2,10 @@ package com.example.watopoly.model;
 
 import com.example.watopoly.view.BoardView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Board {
+public class Board implements Serializable {
     private ArrayList<Tile> boardTiles = new ArrayList<>();
 
     public void setTiles(ArrayList<Tile> tiles) {

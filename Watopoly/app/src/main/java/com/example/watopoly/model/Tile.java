@@ -3,7 +3,9 @@ package com.example.watopoly.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public abstract class Tile {
+import java.io.Serializable;
+
+public abstract class Tile implements Serializable {
     protected String name;
     protected Coordinates coordinates = new Coordinates(0,0,0,0);
     protected int maxNumberOfPlayers;
