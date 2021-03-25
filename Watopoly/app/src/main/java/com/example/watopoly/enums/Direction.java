@@ -1,6 +1,6 @@
 package com.example.watopoly.enums;
 
-public enum BuildingDirection {
+public enum Direction {
     TOP,
     LEFT,
     BOTTOM,

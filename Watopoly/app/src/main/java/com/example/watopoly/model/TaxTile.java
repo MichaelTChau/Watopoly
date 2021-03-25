@@ -3,7 +3,7 @@ package com.example.watopoly.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.example.watopoly.enums.BuildingDirection;
+import com.example.watopoly.enums.Direction;
 
 public class TaxTile extends Tile {
     @Override
@@ -16,9 +16,9 @@ public class TaxTile extends Tile {
 
     }
 
-    private BuildingDirection direction;
+    private Direction direction;
 
-    public TaxTile(BuildingDirection d) {
+    public TaxTile(Direction d) {
         this.direction = d;
     }
 }
