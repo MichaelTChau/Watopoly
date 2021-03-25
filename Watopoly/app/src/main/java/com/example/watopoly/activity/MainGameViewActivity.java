@@ -33,7 +33,6 @@ public class MainGameViewActivity extends AppCompatActivity {
         setup();
         playerInfoHeaderFragment.setPlayer(gameState.nextTurn());
 
-
         //TODO: rolling
     }
 

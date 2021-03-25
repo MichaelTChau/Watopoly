@@ -10,6 +10,7 @@ public class Board {
     public void setTiles(ArrayList<Tile> tiles) {
         boardTiles = tiles;
     }
+
     //TODO:
     public void move(Player player, int steps) {
     }

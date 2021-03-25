@@ -9,7 +9,7 @@ public class Railway extends Property {
 
     @Override
     double getRentPrice() {
-        return 0;
+        return this.baseRentPrice;
     }
 
     //TODO:

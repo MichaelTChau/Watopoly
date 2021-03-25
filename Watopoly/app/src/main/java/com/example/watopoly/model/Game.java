@@ -17,7 +17,6 @@ public class Game {
     }
 
     //public methods
-
     public void setTiles(ArrayList<Tile> tiles) {
         board.setTiles(tiles);
     }
