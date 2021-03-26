@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,13 +24,13 @@ import com.example.watopoly.view.BoardView;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class MainGameViewActivity extends AppCompatActivity implements FragmentCallbackListener {
     //TODO: move this somewhere else?
+    Game gameState = Game.getInstance();
     private static final double startingMoney = 500;
 
     private PlayerInfoHeaderFragment playerInfoHeaderFragment;
@@ -58,7 +56,6 @@ public class MainGameViewActivity extends AppCompatActivity implements FragmentC
 
     private void startTurn() {
         new SaveData(this).execute();
-        Game gameState = Game.getInstance();
         playerInfoHeaderFragment.setPlayer(gameState.nextTurn());
         diceRollFragment.getView().setVisibility(View.VISIBLE);
         actionLinearLayout.setVisibility(View.GONE);

@@ -3,11 +3,9 @@ package com.example.watopoly.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.example.watopoly.enums.Direction;
+import com.example.watopoly.enums.TileDirection;
 
 public class CardTile extends Tile{
-
-    private Direction direction;
 
     //TODO: draw and apply cards
     @Override
@@ -20,9 +18,9 @@ public class CardTile extends Tile{
 
     }
 
-    public CardTile (String n, Direction d) {
+    public CardTile (String n, TileDirection d) {
         this.name = n;
-        this.direction = d;
+        this.tileDirection = d;
         maxNumberOfPlayers = 2;
     }
 }

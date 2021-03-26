@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.example.watopoly.enums.Direction;
+import com.example.watopoly.enums.TileDirection;
 
 public class Building extends Property {
     private int numberOfHouses = 0;
@@ -35,25 +35,25 @@ public class Building extends Property {
         // offset for thickness of gameboard lines, which is currently 4
         int thicknessOffset = 2;
 
-        if (direction == Direction.LEFT) {
+        if (tileDirection == TileDirection.LEFT) {
             canvas.drawRect(coordinates.left + fillOffset,
                     coordinates.top,
                     coordinates.right - thicknessOffset,
                     coordinates.bottom - thicknessOffset,
                     insideFill);
-        } else if (direction == Direction.TOP) {
+        } else if (tileDirection == TileDirection.TOP) {
             canvas.drawRect(coordinates.left + thicknessOffset,
                     coordinates.top + fillOffset,
                     coordinates.right - thicknessOffset,
                     coordinates.bottom - thicknessOffset,
                     insideFill);
-        } else if (direction == Direction.RIGHT) {
+        } else if (tileDirection == TileDirection.RIGHT) {
             canvas.drawRect(coordinates.left + thicknessOffset,
                     coordinates.top - thicknessOffset,
                     coordinates.right - fillOffset,
                     coordinates.bottom - thicknessOffset,
                     insideFill);
-        } else if (direction == Direction.BOTTOM) {
+        } else if (tileDirection == TileDirection.BOTTOM) {
             canvas.drawRect(coordinates.left + thicknessOffset,
                     coordinates.top - fillOffset,
                     coordinates.right - thicknessOffset,
@@ -67,7 +67,7 @@ public class Building extends Property {
 
     }
 
-    public Building(String name, Direction direction, double baseRentPrice, double purchasePrice, String hexCode) {
+    public Building(String name, TileDirection direction, double baseRentPrice, double purchasePrice, String hexCode) {
         super(name, direction, baseRentPrice, purchasePrice);
         this.hexCode = hexCode;
     }

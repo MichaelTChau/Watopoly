@@ -3,7 +3,7 @@ package com.example.watopoly.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.example.watopoly.enums.Direction;
+import com.example.watopoly.enums.TileDirection;
 
 public class Utility extends Property {
 
@@ -29,7 +29,7 @@ public class Utility extends Property {
     }
 
 
-    public Utility(String name, Direction direction, double baseRentPrice, double purchasePrice) {
+    public Utility(String name, TileDirection direction, double baseRentPrice, double purchasePrice) {
         super(name, direction, baseRentPrice, purchasePrice);
     }
 

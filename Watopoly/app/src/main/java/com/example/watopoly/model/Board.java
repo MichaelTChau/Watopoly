@@ -1,7 +1,5 @@
 package com.example.watopoly.model;
 
-import com.example.watopoly.view.BoardView;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

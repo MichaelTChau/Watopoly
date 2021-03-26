@@ -3,6 +3,8 @@ package com.example.watopoly.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.example.watopoly.enums.TileDirection;
+
 public class GoTile extends Tile {
     @Override
     void landOn(Canvas canvas, Player player, Paint paint) { }
@@ -14,6 +16,7 @@ public class GoTile extends Tile {
 
     public GoTile() {
         maxNumberOfPlayers = 4;
+        tileDirection = TileDirection.CORNER;
     }
 
 }

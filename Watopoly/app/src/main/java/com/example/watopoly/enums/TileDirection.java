@@ -1,8 +1,9 @@
 package com.example.watopoly.enums;
 
-public enum Direction {
+public enum TileDirection {
     TOP,
     LEFT,
     BOTTOM,
-    RIGHT
+    RIGHT,
+    CORNER
 }

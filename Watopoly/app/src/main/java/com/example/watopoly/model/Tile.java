@@ -3,6 +3,8 @@ package com.example.watopoly.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.example.watopoly.enums.TileDirection;
+
 import java.io.Serializable;
 
 public abstract class Tile implements Serializable {
@@ -10,6 +12,7 @@ public abstract class Tile implements Serializable {
     protected Coordinates coordinates = new Coordinates(0,0,0,0);
     protected int maxNumberOfPlayers;
     protected int currNumberOfPlayers = 0;
+    protected TileDirection tileDirection;
 
     abstract void landOn(Canvas canvas, Player player, Paint paint);
 
