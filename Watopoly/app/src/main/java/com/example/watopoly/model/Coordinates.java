@@ -1,6 +1,8 @@
 package com.example.watopoly.model;
 
-public class Coordinates {
+import java.io.Serializable;
+
+public class Coordinates implements Serializable {
     float left; float top; float right; float bottom;
 
     public Coordinates(float l, float t, float r, float b) {

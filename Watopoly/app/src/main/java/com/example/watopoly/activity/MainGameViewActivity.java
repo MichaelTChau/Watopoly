@@ -30,7 +30,6 @@ import java.util.ArrayList;
 
 public class MainGameViewActivity extends AppCompatActivity implements FragmentCallbackListener {
     //TODO: move this somewhere else?
-    Game gameState = Game.getInstance();
     private static final double startingMoney = 500;
 
     private PlayerInfoHeaderFragment playerInfoHeaderFragment;
@@ -56,6 +55,7 @@ public class MainGameViewActivity extends AppCompatActivity implements FragmentC
 
     private void startTurn() {
         new SaveData(this).execute();
+        Game gameState = Game.getInstance();
         playerInfoHeaderFragment.setPlayer(gameState.nextTurn());
         diceRollFragment.getView().setVisibility(View.VISIBLE);
         actionLinearLayout.setVisibility(View.GONE);
@@ -70,6 +70,7 @@ public class MainGameViewActivity extends AppCompatActivity implements FragmentC
         diceRollFragment = (DiceRollFragment) fm.findFragmentById(R.id.rollToMoveFragment);
         diceRollFragment.setCallbackListener(this);
 
+        Game gameState = Game.getInstance();
         BoardView boardView = findViewById(R.id.board);
         ArrayList<Tile> tiles = boardView.getTiles();
         gameState.setTiles(tiles);
